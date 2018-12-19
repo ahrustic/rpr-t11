@@ -102,7 +102,7 @@ public class GeografijaDAO {
 
             int drzavaId = resultSet.getInt("d.id");
             Integer gradId = resultSet.getInt("d.glavni_grad");
-            Drzava novaDrzava = new Drzava(drzavaId, gradId, null);
+            Drzava novaDrzava = new Drzava(drzavaId, drzava, null);
             Grad glavniGrad = glavniGrad(drzava);
             glavniGrad.setDrzava(novaDrzava);
             novaDrzava.setGlavniGrad(glavniGrad);
