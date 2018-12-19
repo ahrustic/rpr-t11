@@ -65,7 +65,7 @@ public class GeografijaDAO {
             int id = resultSet.getInt("g.id");
             String naziv = resultSet.getString("g.naziv");
             int brojStanovnika = resultSet.getInt("g.broj_stanovnika");
-            return new Grad(id, naziv, brojStanovnika);
+            return new Grad(id, naziv, brojStanovnika, null);
 
         } catch (SQLException e) {
             //e.printStackTrace();
@@ -124,7 +124,7 @@ public class GeografijaDAO {
             preparedStatement.setString(2, grad.getNaziv());
             preparedStatement.setInt(3, grad.getBrojStanovnika());
             preparedStatement.setNull(4, 0);
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             //e.printStackTrace();
@@ -140,7 +140,7 @@ public class GeografijaDAO {
             preparedStatement.setInt(1, drzava.getId());
             preparedStatement.setString(2, drzava.getNaziv());
             preparedStatement.setInt(3, drzava.getGlavniGrad().getId());
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             //e.printStackTrace();
@@ -151,12 +151,16 @@ public class GeografijaDAO {
         try{
             String upit1 = "UPDATE grad set broj_stanovnika = ? where id = ?";
             String upit2 = "UPDATE grad set name = ? where id = ?";
+            String upit3 = "UPDATE grad set drzava = ? where id = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(upit1);
             preparedStatement.setInt(1, grad.getBrojStanovnika());
             PreparedStatement preparedStatement2 = conn.prepareStatement(upit2);
             preparedStatement.setString(2, grad.getNaziv());
+            PreparedStatement preparedStatement3 = conn.prepareStatement(upit3);
+            preparedStatement.setInt(1, grad.getId());
             preparedStatement.executeUpdate();
             preparedStatement2.executeUpdate();
+            preparedStatement3.executeUpdate();
         } catch (SQLException e) {
             //e.printStackTrace();
         }
