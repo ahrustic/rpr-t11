@@ -48,8 +48,13 @@ public class Grad {
         this.id = id;
     }
 
+
+    public String toString1() {
+        return "Glavni grad " + drzava.getNaziv() + " je " + naziv + "\n";
+
+    }
     @Override
     public String toString() {
-        return naziv + " je grad drzave " + drzava.getNaziv();
+        return naziv + "(" + drzava.getNaziv() + ") - " + brojStanovnika + "\n";
     }
 }
