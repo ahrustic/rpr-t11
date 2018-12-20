@@ -56,6 +56,27 @@ public class GeografijaDAO implements Initializable {
     private GeografijaDAO() {
         gradovi = new ArrayList<>();
         drzave = new ArrayList<>();
+        /*try {
+            PreparedStatement statement=null;
+            Statement statement1 = null;
+            try{
+                statement1= conn.createStatement();
+                statement1.execute("CREATE TABLE drzava(id INTEGER PRIMARY KEY ,naziv varchar(255) not null, glavni_grad integer )");
+                statement1.execute("CREATE TABLE grad(id integer primary key, naziv varchar(255), broj_stanovnika INTEGER,drzava integer) ");
+                statement1.closeOnCompletion();
+            }catch (Exception e){
+                // System.out.println("ovdje je greska"+e.getMessage());
+                //statement1.execute("CREATE TABLE grad(id int primary key, naziv varchar, broj_stanovnika INTEGER,drzava int; ");
+                try {
+                    statement = conn.prepareStatement("delete from drzava");
+                    statement.execute();
+                    statement = conn.prepareStatement("delete from grad");
+                    statement.execute();
+                } catch (SQLException e1) {
+                    // e1.printStackTrace();
+                }
+            }
+        }catch (Exception e){}*/
         napuniPodacima();
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -230,7 +251,7 @@ public class GeografijaDAO implements Initializable {
     public void dodajDrzavu(Drzava drzava) {
         String upit = "insert into drzava values(?, ?, ?);";
 
-    /*   try {
+     /*try {
             PreparedStatement preparedStatement = conn.prepareStatement(upit);
             preparedStatement.setInt(1, drzava.getId());
             preparedStatement.setString(2, drzava.getNaziv());
