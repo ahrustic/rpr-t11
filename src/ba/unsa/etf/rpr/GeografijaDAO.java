@@ -1,28 +1,112 @@
 package ba.unsa.etf.rpr;
 
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+
+
+import java.io.IOException;
+import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
+import java.util.Scanner;
 
-public class GeografijaDAO {
+
+public class GeografijaDAO implements Initializable {
 
     private static GeografijaDAO instance = null;
     private Connection conn;
-    private String url = "baza.db";
+    private String url = "jdbc:oracle:thin:@ora.db.lab.ri.etf.unsa.ba:1521:ETFLAB";
     private PreparedStatement preparedStatement;
     private ArrayList<Grad> gradovi;
     private ArrayList<Drzava> drzave;
+    Statement statement;
+    private ResultSet resultSet;
+
+    //Za fxml
+    public TableView tabelaDrzava;
+    public TableColumn<Drzava, Integer> idD;
+    public TableColumn<Drzava, String> nazivD;
+    public TableColumn<Drzava, Grad> glavniGrad;
+
+
+    public TableView tabelaGradova;
+    public TableColumn<Grad, Integer> id;
+    public TableColumn<Grad, String> naziv;
+    public TableColumn<Grad, Integer> brojStan;
+    public TableColumn<Grad, Integer> drzava;
+
+
 
     private static void initialize() {
         instance = new GeografijaDAO();
     }
+
+
+   /* private void otvoriPrijavu(){
+        Stage stage = new Stage();
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("user.fxml"));
+            stage.setTitle("Prijava");
+            stage.setScene(new Scene(root, 300, 200));
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+
+        }
+    }
+
+    //dodatak za formular
+
+    public String korisnik;
+    public String pass;
+    public javafx.scene.control.TextField username;
+    public TextField sifra;
+
+    public void prijava(ActionEvent actionEvent) {
+        korisnik = username.getText();
+        pass = sifra.getText();
+        login();
+    }
+
+
+       public boolean login(){
+            try {
+                if (korisnik != null && pass != null) {
+                    String sql = "Select * from users_table Where username='" + korisnik + "' and password='" + pass + "'";
+                     resultSet = statement.executeQuery(sql);
+                    if (resultSet.next()) {
+                       return true;
+                    }
+                }
+            } catch (SQLException err) {
+
+            }
+            return false;
+        }
+*/
 
     private GeografijaDAO() {
         gradovi = new ArrayList<>();
         drzave = new ArrayList<>();
         napuniPodacima();
         try {
-            conn = DriverManager.getConnection("jdbc:sqlite:" + url);
+            conn = DriverManager.getConnection(url);
             preparedStatement = conn.prepareStatement("INSERT INTO grad VALUES (?, ?, ?, NULL)");
+            statement = conn.createStatement();
+           // if (!login()) throw new IllegalArgumentException();
+            //String korisnik = controller.getAutor().textProperty();
+            //ResultSet resultSet = statement.executeQuery("INSERT INTO grad VALUES (?, ?, ?, NULL)");
             for (var grad : gradovi) {
                 try {
                     preparedStatement.setInt(1, grad.getId());
@@ -159,7 +243,7 @@ public class GeografijaDAO {
     public void dodajGrad(Grad grad) {
         String upit = "insert into grad values(?, ?, ?, ?);";
 
-        try {
+       /* try {
             PreparedStatement preparedStatement = conn.prepareStatement(upit);
             preparedStatement.setInt(1, grad.getId());
             preparedStatement.setString(2, grad.getNaziv());
@@ -169,14 +253,17 @@ public class GeografijaDAO {
 
         } catch (SQLException e) {
             //e.printStackTrace();
-        }
+        }*/
+
+        if (gradovi.contains(grad)) throw new IllegalArgumentException("Grad vec postoji");
+        gradovi.add(grad);
 
     }
 
     public void dodajDrzavu(Drzava drzava) {
         String upit = "insert into drzava values(?, ?, ?);";
 
-        try {
+    /*   try {
             PreparedStatement preparedStatement = conn.prepareStatement(upit);
             preparedStatement.setInt(1, drzava.getId());
             preparedStatement.setString(2, drzava.getNaziv());
@@ -185,7 +272,9 @@ public class GeografijaDAO {
 
         } catch (SQLException e) {
             //e.printStackTrace();
-        }
+        }*/
+        if (drzave.contains(drzava)) throw new IllegalArgumentException("Drzava vec postoji");
+        drzave.add(drzava);
     }
 
     public void izmijeniGrad(Grad grad) {
@@ -205,5 +294,45 @@ public class GeografijaDAO {
         } catch (SQLException e) {
             //e.printStackTrace();
         }
+    }
+
+    public void izmijeniGrad1(ActionEvent actionEvent) {
+        izmijeniGrad((Grad) tabelaGradova.getSelectionModel().getSelectedItem());
+    }
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        tabelaDrzava.setItems((ObservableList) drzave);
+        idD.setCellValueFactory(new PropertyValueFactory<>("idD"));
+        nazivD.setCellValueFactory(new PropertyValueFactory<>("nazivD"));
+        glavniGrad.setCellValueFactory(new PropertyValueFactory<>("glavniGrad"));
+
+
+        tabelaGradova.setItems((ObservableList) gradovi);
+        id.setCellValueFactory(new PropertyValueFactory<>("id"));
+        naziv.setCellValueFactory(new PropertyValueFactory<>("naziv"));
+        brojStan.setCellValueFactory(new PropertyValueFactory<>("brojStan"));
+        drzava.setCellValueFactory(new PropertyValueFactory<>("drzava"));
+
+    }
+
+    public void dodajDrzavu(ActionEvent actionEvent) {
+        dodajDrzavu(new Drzava(123, "Nova", new Grad()));
+    }
+
+
+    public void dodajGrad(ActionEvent actionEvent) {
+        dodajGrad(new Grad(123, "Novi", 1000, new Drzava()));
+    }
+
+    public void obrisiDrzavu(ActionEvent actionEvent) {
+        drzave.remove(tabelaGradova.getSelectionModel().getSelectedItem());
+    }
+
+    public void nadiDrzavu(ActionEvent actionEvent) {
+        Scanner scanner = new Scanner(System.in);
+        String drzavaZaPronaci = scanner.nextLine();
+        nadjiDrzavu(drzavaZaPronaci);
     }
 }
