@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -52,56 +53,13 @@ public class GeografijaDAO implements Initializable {
     }
 
 
-   /* private void otvoriPrijavu(){
-        Stage stage = new Stage();
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("user.fxml"));
-            stage.setTitle("Prijava");
-            stage.setScene(new Scene(root, 300, 200));
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-
-        }
-    }
-
-    //dodatak za formular
-
-    public String korisnik;
-    public String pass;
-    public javafx.scene.control.TextField username;
-    public TextField sifra;
-
-    public void prijava(ActionEvent actionEvent) {
-        korisnik = username.getText();
-        pass = sifra.getText();
-        login();
-    }
-
-
-       public boolean login(){
-            try {
-                if (korisnik != null && pass != null) {
-                    String sql = "Select * from users_table Where username='" + korisnik + "' and password='" + pass + "'";
-                     resultSet = statement.executeQuery(sql);
-                    if (resultSet.next()) {
-                       return true;
-                    }
-                }
-            } catch (SQLException err) {
-
-            }
-            return false;
-        }
-*/
-
     private GeografijaDAO() {
         gradovi = new ArrayList<>();
         drzave = new ArrayList<>();
         napuniPodacima();
         try {
-            conn = DriverManager.getConnection(url);
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            conn = DriverManager.getConnection(url, "AH18103", "HRht2wV1");
             preparedStatement = conn.prepareStatement("INSERT INTO grad VALUES (?, ?, ?, NULL)");
             statement = conn.createStatement();
            // if (!login()) throw new IllegalArgumentException();
@@ -137,6 +95,8 @@ public class GeografijaDAO implements Initializable {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -167,7 +127,14 @@ public class GeografijaDAO implements Initializable {
         drzave.add(francuska);
         drzave.add(engleska);
         drzave.add(austrija);
-
+        gradovi.sort(new Comparator<Grad>() {
+            @Override
+            public int compare(Grad o1, Grad o2) {
+                Integer brojStanovnika1 = o2.getBrojStanovnika();
+                Integer brojStanovnika2 = o1.getBrojStanovnika();
+                return brojStanovnika1.compareTo(brojStanovnika2);
+            }
+        });
     }
 
 
