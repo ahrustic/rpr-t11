@@ -266,6 +266,36 @@ public class GeografijaDAO implements Initializable {
     }
 
     public void izmijeniGrad(Grad grad) {
+
+        /*PreparedStatement statement = null;
+        try {
+            dajGradove = connection.prepareStatement("select * from grad");
+            drzava = conn.prepareStatement("select * from drzava");
+            getGrad = connection.prepareStatement("select * from grad where id=?");
+            getDrzava = connection.prepareStatement("select * from drzava where naziv=?");
+            PreparedStatement drzava;
+            drzava.setString(1,grad.getDrzava().getNaziv());
+            ResultSet res = getDrzava.executeQuery();
+            int id=0;
+            while(res.next()){
+                id=res.getInt(3);
+            }
+
+            getGrad.setInt(1,id);
+            ResultSet set = getGrad.executeQuery();
+            statement = connection.prepareStatement("update grad set naziv=? where id =?");
+            while(set.next()){
+                statement.setInt(2,id);
+                statement.setString(1,grad.getNaziv());
+                set.close();
+                break;
+            }
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }*/
+
         try{
             String upit1 = "UPDATE grad set broj_stanovnika = ? where id = ?";
             String upit2 = "UPDATE grad set name = ? where id = ?";

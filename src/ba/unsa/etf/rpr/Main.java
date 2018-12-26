@@ -10,6 +10,7 @@ public class Main {
         glavniGrad();
     }
 
+
     private static void glavniGrad() {
         System.out.println("Unesite naziv drzave: ");
         Scanner scanner = new Scanner(System.in);

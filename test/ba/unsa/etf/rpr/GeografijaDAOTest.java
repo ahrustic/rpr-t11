@@ -105,6 +105,7 @@ class GeografijaDAOTest {
         assertEquals("Bosna i Hercegovina", proba.getDrzava().getNaziv());
     }
 
+
     @Test
     void izmijeniGrad() {
         GeografijaDAO.removeInstance();
