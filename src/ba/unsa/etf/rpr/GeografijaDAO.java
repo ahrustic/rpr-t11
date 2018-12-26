@@ -26,12 +26,13 @@ public class GeografijaDAO implements Initializable {
 
     private static GeografijaDAO instance = null;
     private Connection conn;
-    private String url = "jdbc:oracle:thin:@ora.db.lab.ri.etf.unsa.ba:1521:ETFLAB";
+    private String url = "jdbc:sqlite:baza.db";
     private PreparedStatement preparedStatement;
     private ArrayList<Grad> gradovi;
     private ArrayList<Drzava> drzave;
     Statement statement;
     private ResultSet resultSet;
+
 
     //Za fxml
     public TableView tabelaDrzava;
@@ -45,7 +46,18 @@ public class GeografijaDAO implements Initializable {
     public TableColumn<Grad, String> naziv;
     public TableColumn<Grad, Integer> brojStan;
     public TableColumn<Grad, Integer> drzava;
+    private static int lastGrad;
+    private static int lastDrzava;
 
+    private static PreparedStatement ubaci_drzavu = null;
+    private static PreparedStatement ubaci_grad = null;
+    private static PreparedStatement gradByNaziv = null;
+    private static PreparedStatement gradById = null;
+    private static PreparedStatement drzavaByNaziv = null;
+    private static PreparedStatement glavniGradstm = null;
+    private static PreparedStatement deleteGradByDrzavaId = null;
+    private static PreparedStatement deleteDrzavaByNaziv = null;
+    private static PreparedStatement editGrad = null;
 
 
     private static void initialize() {
@@ -53,73 +65,69 @@ public class GeografijaDAO implements Initializable {
     }
 
 
-    private GeografijaDAO() {
+    private GeografijaDAO(){
         gradovi = new ArrayList<>();
         drzave = new ArrayList<>();
-        /*try {
-            PreparedStatement statement=null;
-            Statement statement1 = null;
-            try{
-                statement1= conn.createStatement();
-                statement1.execute("CREATE TABLE drzava(id INTEGER PRIMARY KEY ,naziv varchar(255) not null, glavni_grad integer )");
-                statement1.execute("CREATE TABLE grad(id integer primary key, naziv varchar(255), broj_stanovnika INTEGER,drzava integer) ");
-                statement1.closeOnCompletion();
-            }catch (Exception e){
-                // System.out.println("ovdje je greska"+e.getMessage());
-                //statement1.execute("CREATE TABLE grad(id int primary key, naziv varchar, broj_stanovnika INTEGER,drzava int; ");
-                try {
-                    statement = conn.prepareStatement("delete from drzava");
-                    statement.execute();
-                    statement = conn.prepareStatement("delete from grad");
-                    statement.execute();
-                } catch (SQLException e1) {
-                    // e1.printStackTrace();
-                }
-            }
-        }catch (Exception e){}*/
         napuniPodacima();
+        conn = null;
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            conn = DriverManager.getConnection(url, "AH18103", "HRht2wV1");
-            preparedStatement = conn.prepareStatement("INSERT INTO grad VALUES (?, ?, ?, NULL)");
-            statement = conn.createStatement();
-           // if (!login()) throw new IllegalArgumentException();
-            //String korisnik = controller.getAutor().textProperty();
-            //ResultSet resultSet = statement.executeQuery("INSERT INTO grad VALUES (?, ?, ?, NULL)");
-            for (var grad : gradovi) {
-                try {
-                    preparedStatement.setInt(1, grad.getId());
-                    preparedStatement.setString(2, grad.getNaziv());
-                    preparedStatement.setInt(3, grad.getBrojStanovnika());
-                    preparedStatement.executeUpdate();
-                } catch (SQLException ignored) {
+            conn = DriverManager.getConnection("jdbc:sqlite:baza.db");
+
+            Statement statement = null;
+            try{
+                statement = conn.createStatement();
+                statement.execute("select id from drzava");
+
+            }catch (Exception e){
+                try{
+                    Statement statement2=null;
+                    statement2 = conn.createStatement();
+//                    connection.setAutoCommit(false);
+                    statement2.execute("CREATE TABLE grad(id integer primary key, naziv varchar(255), broj_stanovnika integer)");
+                    statement2.execute("CREATE TABLE drzava(id integer primary key, naziv varchar(255), glavni_grad integer unique references grad(id))");
+                    statement2.execute("ALTER TABLE grad ADD drzava integer references drzava(id)");
+
+                    statement2.execute("INSERT INTO drzava values (1,'Velika Britanija',1)");
+                    statement2.execute("INSERT INTO drzava values (2,'Austrija',2)");
+                    statement2.execute("INSERT INTO drzava values (3,'Francuska',3)");
+                    statement2.execute("INSERT INTO grad values (1,'London',8825000,1)");
+                    statement2.execute("INSERT INTO grad values (2,'Beč',1899055,2)");
+                    statement2.execute("INSERT INTO grad values (3,'Pariz',2206488,3)");
+                    statement2.execute("INSERT INTO grad values (4,'Manchester',545500,1)");
+                    statement2.execute("INSERT INTO grad values (5,'Graz',280200,2)");
+                    lastGrad=5;
+                    lastDrzava=3;
+                }catch (Exception ex){
+
                 }
             }
-            preparedStatement = conn.prepareStatement("INSERT  INTO drzava VALUES(?, ?, ?)");
-            for (var drzava : drzave) {
-                try {
-                    preparedStatement.setInt(1, drzava.getId());
-                    preparedStatement.setString(2, drzava.getNaziv());
-                    preparedStatement.setInt(3, drzava.getGlavniGrad().getId());
-                    preparedStatement.executeUpdate();
-                } catch (SQLException ignored) {
-                }
-            }
-            preparedStatement = conn.prepareStatement("UPDATE grad SET drzava = ? WHERE id = ?");
-            for (var grad : gradovi) {
-                try {
-                    preparedStatement.setInt(1, grad.getDrzava().getId());
-                    preparedStatement.setInt(2, grad.getId());
-                    preparedStatement.executeUpdate();
-                } catch (SQLException ignored) {
-                }
-            }
+            glavniGradstm = conn.prepareStatement("select g.id, g.naziv, g.broj_stanovnika, d.id, d.naziv from grad g inner join drzava d on g.id = d.glavni_grad where d.naziv=?");
+            gradByNaziv = conn.prepareStatement("select id, naziv from grad where naziv = ?");
+            gradById = conn.prepareStatement("select id,naziv,broj_stanovnika from grad where id =?");
+            drzavaByNaziv = conn.prepareStatement("select id,naziv,glavni_grad from drzava where naziv = ?");
+            deleteGradByDrzavaId = conn.prepareStatement("DELETE FROM grad WHERE drzava = ?");
+            deleteDrzavaByNaziv = conn.prepareStatement("DELETE FROM drzava WHERE naziv = ?");
+            ubaci_drzavu = conn.prepareStatement("INSERT INTO drzava VALUES(?,?,?)");
+            ubaci_grad = conn.prepareStatement("INSERT INTO grad VALUES(?,?,?,?)");
+            editGrad = conn.prepareStatement("UPDATE grad SET naziv = ?, broj_stanovnika=? WHERE id = ?");
+
+
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public static void removeInstance() {
@@ -280,7 +288,6 @@ public class GeografijaDAO implements Initializable {
             while(res.next()){
                 id=res.getInt(3);
             }
-
             getGrad.setInt(1,id);
             ResultSet set = getGrad.executeQuery();
             statement = connection.prepareStatement("update grad set naziv=? where id =?");
