@@ -7,15 +7,18 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("geografija.fxml"));
-        primaryStage.setTitle("Gradovi");
-        primaryStage.setScene(new Scene(root, 450, 300));
+        ResourceBundle bundle = ResourceBundle.getBundle("Translation");
+        FXMLLoader loader = new FXMLLoader( getClass().getResource("geografija.fxml" ), bundle);
+        //Parent root = FXMLLoader.load(getClass().getResource("geografija.fxml"));
+        //primaryStage.setTitle("Gradovi");
+        //primaryStage.setScene(new Scene(root, 450, 300));
         primaryStage.show();
 
     }
