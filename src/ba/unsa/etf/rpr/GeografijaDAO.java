@@ -37,7 +37,7 @@ import java.util.Scanner;
 public class GeografijaDAO implements Initializable {
 
     private static GeografijaDAO instance = null;
-    private Connection conn;
+    public static Connection conn;
     private String url = "jdbc:sqlite:baza.db";
     private PreparedStatement preparedStatement;
     private ArrayList<Grad> grad;
@@ -103,85 +103,13 @@ public class GeografijaDAO implements Initializable {
     }
 
 
-    @FXML
-    public void otvori(ActionEvent actionEvent){
-        Stage stage = new Stage();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("FXML Files", "*.fxml")
-        );
-        File selectedFile = fileChooser.showOpenDialog(stage);
-
-    }
-
-    @FXML
-    public void snimi(ActionEvent actionEvent){
-        Stage stage = new Stage();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("PDF Files", "*.pdf"),
-                new FileChooser.ExtensionFilter("DOCX Files", "*.docx"),
-                new FileChooser.ExtensionFilter("XSLX Files", "*.xslx")
-        );
-        File selectedFile = fileChooser.showSaveDialog(stage);
-
-    }
-
-    public void doSave(File file) {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = null;
-        try {
-            builder = factory.newDocumentBuilder();
-            Document doc = builder.newDocument();
-
-            int brojac = 0;
-
-            Element rootElement = doc.createElement("biblioteka");
-            doc.appendChild(rootElement);
-
-
-            for (Grad iterator : grad){
-                brojac++;
-
-                Element grad = doc.createElement("knjiga");
-                rootElement.appendChild(grad);
-
-
-                Attr atribut = doc.createAttribute("brojStranica");
-                atribut.setValue(Integer.toString(iterator.getBrojStanovnika()));
-                grad.setAttributeNode(atribut);
-
-
-
-            }
-
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            Transformer transformer = tFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(file);
-            System.out.println(result);
-            StreamResult newResult = new StreamResult(System.out);
-            transformer.transform(source, newResult);
-            transformer.transform(source, result);
-
-
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        }
-        catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
 
     public static void removeInstance() {
         instance = null;
+    }
+
+    public static Connection getConnection() {
+        return conn;
     }
 
     private void napuniPodacima() {
@@ -416,11 +344,5 @@ public class GeografijaDAO implements Initializable {
         return conn;
     }
 
-    public void stampaj(ActionEvent actionEvent) {
-        try {
-            new GradoviReport().showReport((com.sun.jdi.connect.spi.Connection) getConn());
-        } catch (JRException e1) {
-            e1.printStackTrace();
-        }
-    }
+
 }

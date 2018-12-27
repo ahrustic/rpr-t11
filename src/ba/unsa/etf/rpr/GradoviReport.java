@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GradoviReport extends JFrame {
-    public void showReport(Connection conn) throws JRException {
-        String reportSrcFile = getClass().getResource("/resource/gradovi.jrxml").getFile();
-        String reportsDir = getClass().getResource("/resource/").getFile();
+
+    //private Connection conn;
+
+    public void showReport(java.sql.Connection connection) throws JRException {
+        String reportSrcFile = getClass().getResource("/gradovi.jrxml").getFile();
+        String reportsDir = getClass().getResource("/").getFile();
 
         JasperReport jasperReport = JasperCompileManager.compileReport(reportSrcFile);
         // Fields for resources path
@@ -19,7 +22,7 @@ public class GradoviReport extends JFrame {
         parameters.put("reportsDirPath", reportsDir);
         ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
         list.add(parameters);
-        JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, (java.sql.Connection) conn);
+        JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, GeografijaDAO.getConnection());
         JRViewer viewer = new JRViewer(print);
         viewer.setOpaque(true);
         viewer.setVisible(true);

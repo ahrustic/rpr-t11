@@ -7,25 +7,28 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
+        Locale.setDefault(new Locale("bs","BA"));
         ResourceBundle bundle = ResourceBundle.getBundle("Translation");
-        FXMLLoader loader = new FXMLLoader( getClass().getResource("geografija.fxml" ), bundle);
-        //Parent root = FXMLLoader.load(getClass().getResource("geografija.fxml"));
-        //primaryStage.setTitle("Gradovi");
-        //primaryStage.setScene(new Scene(root, 450, 300));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("program.fxml"), bundle);
+        Parent root = loader.load();
+        primaryStage.setTitle("Države i gradovi");
+        primaryStage.setScene(new Scene(root, 600, 420));
         primaryStage.show();
 
     }
 
     public static void main(String[] args) {
         System.out.println("Gradovi su:\n" + ispisiGradove());
-        glavniGrad();
+        //glavniGrad();
+        launch(args);
     }
 
 
