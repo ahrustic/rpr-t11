@@ -2,13 +2,17 @@ package ba.unsa.etf.rpr;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRException;
 
 
+import java.io.File;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -41,8 +45,6 @@ public class GeografijaDAO implements Initializable {
     public TableColumn<Grad, String> naziv;
     public TableColumn<Grad, Integer> brojStan;
     public TableColumn<Grad, Integer> drzava;
-    private static int lastGrad;
-    private static int lastDrzava;
     private static void initialize() {
         instance = new GeografijaDAO();
     }
@@ -78,8 +80,6 @@ public class GeografijaDAO implements Initializable {
                     statement2.execute("INSERT INTO grad values (3,'Pariz',2206488,3)");
                     statement2.execute("INSERT INTO grad values (4,'Manchester',545500,1)");
                     statement2.execute("INSERT INTO grad values (5,'Graz',280200,2)");
-                    lastGrad=5;
-                    lastDrzava=3;
                 }catch (Exception ex){
 
                 }
@@ -87,6 +87,31 @@ public class GeografijaDAO implements Initializable {
 
         } catch (SQLException e) {
         }
+    }
+
+
+    @FXML
+    public void otvori(ActionEvent actionEvent){
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("FXML Files", "*.fxml")
+        );
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+    }
+
+    @FXML
+    public void snimi(ActionEvent actionEvent){
+        Stage stage = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("FXML Files", "*.fxml")
+        );
+        File selectedFile = fileChooser.showSaveDialog(stage);
+
     }
 
 

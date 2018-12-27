@@ -20,7 +20,7 @@ public class Main extends Application {
 
     }
 
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         System.out.println("Gradovi su:\n" + ispisiGradove());
         glavniGrad();
     }
@@ -42,5 +42,5 @@ public class Main extends Application {
             rez += g;
         }
         return rez;
-    }*/
+    }
 }
