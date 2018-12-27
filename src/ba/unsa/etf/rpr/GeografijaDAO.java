@@ -10,11 +10,24 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRException;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.net.URL;
 import java.sql.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ResourceBundle;
@@ -108,11 +121,63 @@ public class GeografijaDAO implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("FXML Files", "*.fxml")
+                new FileChooser.ExtensionFilter("PDF Files", "*.pdf"),
+                new FileChooser.ExtensionFilter("DOCX Files", "*.docx"),
+                new FileChooser.ExtensionFilter("XSLX Files", "*.xslx")
         );
         File selectedFile = fileChooser.showSaveDialog(stage);
 
     }
+
+    public void doSave(File file) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
+        try {
+            builder = factory.newDocumentBuilder();
+            Document doc = builder.newDocument();
+
+            int brojac = 0;
+
+            Element rootElement = doc.createElement("biblioteka");
+            doc.appendChild(rootElement);
+
+
+            for (Grad iterator : grad){
+                brojac++;
+
+                Element grad = doc.createElement("knjiga");
+                rootElement.appendChild(grad);
+
+
+                Attr atribut = doc.createAttribute("brojStranica");
+                atribut.setValue(Integer.toString(iterator.getBrojStanovnika()));
+                grad.setAttributeNode(atribut);
+
+
+
+            }
+
+            TransformerFactory tFactory = TransformerFactory.newInstance();
+            Transformer transformer = tFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(file);
+            System.out.println(result);
+            StreamResult newResult = new StreamResult(System.out);
+            transformer.transform(source, newResult);
+            transformer.transform(source, result);
+
+
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        }
+        catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
     public static void removeInstance() {
