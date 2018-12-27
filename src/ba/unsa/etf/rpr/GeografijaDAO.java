@@ -2,18 +2,13 @@ package ba.unsa.etf.rpr;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
+import net.sf.jasperreports.engine.JRException;
 
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,7 +23,7 @@ public class GeografijaDAO implements Initializable {
     private Connection conn;
     private String url = "jdbc:sqlite:baza.db";
     private PreparedStatement preparedStatement;
-    private ArrayList<Grad> gradovi;
+    private ArrayList<Grad> grad;
     private ArrayList<Drzava> drzave;
     Statement statement;
     private ResultSet resultSet;
@@ -48,25 +43,13 @@ public class GeografijaDAO implements Initializable {
     public TableColumn<Grad, Integer> drzava;
     private static int lastGrad;
     private static int lastDrzava;
-
-    private static PreparedStatement ubaci_drzavu = null;
-    private static PreparedStatement ubaci_grad = null;
-    private static PreparedStatement gradByNaziv = null;
-    private static PreparedStatement gradById = null;
-    private static PreparedStatement drzavaByNaziv = null;
-    private static PreparedStatement glavniGradstm = null;
-    private static PreparedStatement deleteGradByDrzavaId = null;
-    private static PreparedStatement deleteDrzavaByNaziv = null;
-    private static PreparedStatement editGrad = null;
-
-
     private static void initialize() {
         instance = new GeografijaDAO();
     }
 
 
     private GeografijaDAO(){
-        gradovi = new ArrayList<>();
+        grad = new ArrayList<>();
         drzave = new ArrayList<>();
         napuniPodacima();
         conn = null;
@@ -101,33 +84,10 @@ public class GeografijaDAO implements Initializable {
 
                 }
             }
-            glavniGradstm = conn.prepareStatement("select g.id, g.naziv, g.broj_stanovnika, d.id, d.naziv from grad g inner join drzava d on g.id = d.glavni_grad where d.naziv=?");
-            gradByNaziv = conn.prepareStatement("select id, naziv from grad where naziv = ?");
-            gradById = conn.prepareStatement("select id,naziv,broj_stanovnika from grad where id =?");
-            drzavaByNaziv = conn.prepareStatement("select id,naziv,glavni_grad from drzava where naziv = ?");
-            deleteGradByDrzavaId = conn.prepareStatement("DELETE FROM grad WHERE drzava = ?");
-            deleteDrzavaByNaziv = conn.prepareStatement("DELETE FROM drzava WHERE naziv = ?");
-            ubaci_drzavu = conn.prepareStatement("INSERT INTO drzava VALUES(?,?,?)");
-            ubaci_grad = conn.prepareStatement("INSERT INTO grad VALUES(?,?,?,?)");
-            editGrad = conn.prepareStatement("UPDATE grad SET naziv = ?, broj_stanovnika=? WHERE id = ?");
-
 
         } catch (SQLException e) {
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public static void removeInstance() {
@@ -148,15 +108,15 @@ public class GeografijaDAO implements Initializable {
         bec.setDrzava(austrija);
         manchester.setDrzava(engleska);
         graz.setDrzava(austrija);
-        gradovi.add(pariz);
-        gradovi.add(london);
-        gradovi.add(bec);
-        gradovi.add(manchester);
-        gradovi.add(graz);
+        grad.add(pariz);
+        grad.add(london);
+        grad.add(bec);
+        grad.add(manchester);
+        grad.add(graz);
         drzave.add(francuska);
         drzave.add(engleska);
         drzave.add(austrija);
-        gradovi.sort(new Comparator<Grad>() {
+        grad.sort(new Comparator<Grad>() {
             @Override
             public int compare(Grad o1, Grad o2) {
                 Integer brojStanovnika1 = o2.getBrojStanovnika();
@@ -174,7 +134,7 @@ public class GeografijaDAO implements Initializable {
 
 
     public ArrayList<Grad> gradovi() {
-        return gradovi;
+        return grad;
     }
 
     public Grad glavniGrad(String drzava) {
@@ -251,8 +211,8 @@ public class GeografijaDAO implements Initializable {
             //e.printStackTrace();
         }*/
 
-        if (gradovi.contains(grad)) throw new IllegalArgumentException("Grad vec postoji");
-        gradovi.add(grad);
+        if (this.grad.contains(grad)) throw new IllegalArgumentException("Grad vec postoji");
+        this.grad.add(grad);
 
     }
 
@@ -334,7 +294,7 @@ public class GeografijaDAO implements Initializable {
         glavniGrad.setCellValueFactory(new PropertyValueFactory<>("glavniGrad"));
 
 
-        tabelaGradova.setItems((ObservableList) gradovi);
+        tabelaGradova.setItems((ObservableList) grad);
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         naziv.setCellValueFactory(new PropertyValueFactory<>("naziv"));
         brojStan.setCellValueFactory(new PropertyValueFactory<>("brojStan"));
@@ -359,5 +319,18 @@ public class GeografijaDAO implements Initializable {
         Scanner scanner = new Scanner(System.in);
         String drzavaZaPronaci = scanner.nextLine();
         nadjiDrzavu(drzavaZaPronaci);
+    }
+
+
+    public Connection getConn() {
+        return conn;
+    }
+
+    public void stampaj(ActionEvent actionEvent) {
+        try {
+            new GradoviReport().showReport((com.sun.jdi.connect.spi.Connection) getConn());
+        } catch (JRException e1) {
+            e1.printStackTrace();
+        }
     }
 }

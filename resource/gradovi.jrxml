@@ -13,6 +13,7 @@
 			<style mode="Opaque" backcolor="#F0EFEF"/>
 		</conditionalStyle>
 	</style>
+	<parameter name="Parameter1" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[select naziv, broj_stanovnika
 from grad]]>
