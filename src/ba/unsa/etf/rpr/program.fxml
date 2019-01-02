@@ -36,7 +36,7 @@
                                     </items>
                                 </Menu>
                             </items>
-                        </Menu>
+                         </Menu>
                     </menus>
                 </MenuBar>
                 <HBox spacing="4.0">

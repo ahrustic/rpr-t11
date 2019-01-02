@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class Main extends Application {
 
-    @Override
+     @Override
     public void start(Stage primaryStage) throws Exception {
         Locale.setDefault(new Locale("bs","BA"));
         ResourceBundle bundle = ResourceBundle.getBundle("Translation");

@@ -21,7 +21,7 @@ public class DrzavaReport extends JFrame {
         parameters.put("reportsDirPath", reportsDir);
         ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
         list.add(parameters);
-        JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, GeografijaDAO.getConnection());
+         JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, GeografijaDAO.getConnection());
         JRViewer viewer = new JRViewer(print);
         viewer.setOpaque(true);
         viewer.setVisible(true);
