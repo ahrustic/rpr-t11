@@ -134,6 +134,15 @@ public class ProgramController implements Initializable {
         }
     }
 
+    public void noviIzvjestaj(ActionEvent actionEvent) {
+        try {
+            DrzavaReport report = new DrzavaReport();
+            report.showReport(GeografijaDAO.getConnection());
+        } catch (JRException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public ProgramController() {
 

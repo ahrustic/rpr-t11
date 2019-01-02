@@ -21,6 +21,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#otvori" text="Open" />
                         <MenuItem fx:id="save" mnemonicParsing="false" onAction="#snimi" text="Save As" />
                         <MenuItem mnemonicParsing="false" onAction="#stampaj" text="Print" />
+                        <MenuItem mnemonicParsing="false" onAction="#noviIzvjestaj" text="Print country" />
                                 <MenuItem mnemonicParsing="false" text="Close" />
                             </items>
                         </Menu>

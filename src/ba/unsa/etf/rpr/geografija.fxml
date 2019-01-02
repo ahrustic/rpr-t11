@@ -60,14 +60,12 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="43.0" prefWidth="612.0">
+            <ToolBar maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="43.0" prefWidth="619.0">
               <items>
                   <Button fx:id="ispisi" mnemonicParsing="false" onAction="#stampaj" text="Ispisi" />
+                  <Button fx:id="nadiD" mnemonicParsing="false" onAction="#noviIzvjestaj" text="Ispisi drzavu" />
                 <Button fx:id="dodaj" mnemonicParsing="false" text="Dodaj grad" />
-                  <Button fx:id="izmijeni" mnemonicParsing="false" text="Izmijeni grad" />
                   <Button fx:id="dodajD" mnemonicParsing="false" text="Dodaj drzavu" />
-                  <Button fx:id="obrisiD" mnemonicParsing="false" text="Obrisi drzavu" />
-                  <Button fx:id="nadiD" mnemonicParsing="false" text="Nadji drzavu" />
               </items>
             </ToolBar>
          </children>
