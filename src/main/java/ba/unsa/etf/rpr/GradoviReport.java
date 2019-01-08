@@ -1,6 +1,5 @@
 package ba.unsa.etf.rpr;
 
-import com.sun.jdi.connect.spi.Connection;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.swing.JRViewer;
 
