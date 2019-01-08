@@ -17,7 +17,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Locale.setDefault(new Locale("bs","BA"));
         ResourceBundle bundle = ResourceBundle.getBundle("Translation");
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../../../../../resource/program.fxml"), bundle);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/program.fxml"), bundle);
         Parent root = loader.load();
         primaryStage.setTitle("Države i gradovi");
         primaryStage.setScene(new Scene(root, 600, 420));
@@ -26,13 +26,14 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        System.out.println("Gradovi su:\n" + ispisiGradove());
+       // System.out.println("Gradovi su:\n" + ispisiGradove());
         //glavniGrad();
         launch(args);
+
     }
 
 
-    private static void glavniGrad() {
+  /* private static void glavniGrad() {
         System.out.println("Unesite naziv drzave: ");
         Scanner scanner = new Scanner(System.in);
         String ime = scanner.nextLine();
@@ -48,5 +49,5 @@ public class Main extends Application {
             rez += g;
         }
         return rez;
-    }
+    }*/
 }
