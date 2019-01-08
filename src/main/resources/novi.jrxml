@@ -11,7 +11,7 @@
 	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
-			<style mode="Opaque" backcolor="#F0EFEF"/>
+	 		<style mode="Opaque" backcolor="#F0EFEF"/>
 		</conditionalStyle>
 	</style>
 	<queryString language="SQL">
@@ -32,10 +32,6 @@ from drzava
 	</background>
 	<title>
 		<band height="132" splitType="Stretch">
-			<image>
-				<reportElement x="2" y="0" width="118" height="132" uuid="d47168ce-aae1-4efc-8d24-e15195025a5a"/>
-				<imageExpression><![CDATA["tree1.png"]]></imageExpression>
-			</image>
 			<staticText>
 				<reportElement style="Title" x="120" y="10" width="435" height="93" uuid="f49d68fd-a2c7-44ec-a5fc-9300d10c85a1"/>
 				<textElement>
@@ -60,10 +56,6 @@ from drzava
 	</columnHeader>
 	<detail>
 		<band height="91" splitType="Stretch">
-			<image>
-				<reportElement x="2" y="0" width="56" height="80" uuid="a0221c49-fb14-4d48-97e4-11333b968c72"/>
-				<imageExpression><![CDATA["tree2.png"]]></imageExpression>
-			</image>
 			<line>
 				<reportElement positionType="FixRelativeToBottom" x="2" y="90" width="551" height="1" uuid="5e41185f-9c90-45ca-839b-e28b308c1430"/>
 			</line>
